@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrice Pré-qualification Fournisseurs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .add-supplier {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .add-supplier:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-weight: 600;
+        }
+
+        .stat-item {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .stat-qualified { background: #d4edda; color: #155724; }
+        .stat-tolerable { background: #fff3cd; color: #856404; }
+        .stat-eliminated { background: #f8d7da; color: #721c24; }
+
+        .matrix-container {
+            padding: 0;
+            overflow-x: auto;
+            max-height: 70vh;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.85em;
+        }
+
+        th {
+            background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 0.8em;
+            line-height: 1.2;
+        }
+
+        th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 11;
+            min-width: 180px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+        .criterion-header {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            width: 60px;
+            min-width: 60px;
+            max-width: 60px;
+            height: 120px;
+        }
+
+        td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            position: relative;
+            min-width: 60px;
+        }
+
+        .supplier-name {
+            background: #f8f9fa;
+            font-weight: 600;
+            text-align: left !important;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            min-width: 180px;
+            border-right: 2px solid #dee2e6;
+            padding: 8px 12px;
+        }
+
+        .supplier-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.9em;
+            padding: 4px;
+        }
+
+        select.criterion-select {
+            width: 100%;
+            padding: 4px;
+            border: none;
+            background: transparent;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .score-cell {
+            font-weight: bold;
+            font-size: 1em;
+            min-width: 80px;
+        }
+
+        .status-cell {
+            font-weight: bold;
+            font-size: 0.9em;
+            min-width: 100px;
+        }
+
+        .status-QUALIFIÉ {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+
+        .status-TOLÉRABLE {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+        }
+
+        .status-ÉLIMINÉ {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+
+        .criterion-eliminatory { 
+            background: rgba(255, 235, 238, 0.5);
+            border-left: 4px solid #f44336;
+        }
+
+        .criterion-qualifying { 
+            background: rgba(243, 229, 245, 0.3);
+            border-left: 4px solid #9c27b0;
+        }
+
+        .value-NON { 
+            background: #ffcdd2; 
+            color: #c62828; 
+            font-weight: 600;
+        }
+
+        .value-TOLÉRABLE { 
+            background: #ffe0b2; 
+            color: #ef6c00; 
+            font-weight: 600;
+        }
+
+        .value-OUI { 
+            background: #c8e6c9; 
+            color: #2e7d32; 
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7em;
+            margin-left: 8px;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .legend {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+
+        .legend-section {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Matrice de Pré-qualification Fournisseurs</h1>
+            <p>Mâts d'éclairage 5-13m • Chine • Objectif: 50 → 10-15 candidats</p>
+        </div>
+
+        <div class="controls">
+            <div>
+                <button class="add-supplier" onclick="addSupplier()">➕ Ajouter Fournisseur</button>
+                <button class="export-btn" onclick="exportData()">📊 Exporter CSV</button>
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterSuppliers('all')">Tous</button>
+                <button class="filter-btn" onclick="filterSuppliers('QUALIFIÉ')">Qualifiés</button>
+                <button class="filter-btn" onclick="filterSuppliers('TOLÉRABLE')">Tolérables</button>
+                <button class="filter-btn" onclick="filterSuppliers('ÉLIMINÉ')">Éliminés</button>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item stat-qualified">
+                    <div>QUALIFIÉS</div>
+                    <div id="qualified-count">0</div>
+                </div>
+                <div class="stat-item stat-tolerable">
+                    <div>TOLÉRABLES</div>
+                    <div id="tolerable-count">0</div>
+                </div>
+                <div class="stat-item stat-eliminated">
+                    <div>ÉLIMINÉS</div>
+                    <div id="eliminated-count">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="matrix-container">
+            <table id="matrix-table">
+                <thead>
+                    <tr>
+                        <th>Nom Fournisseur</th>
+                        <th class="criterion-header criterion-eliminatory">Capacité Production (/mois)</th>
+                        <th class="criterion-header criterion-eliminatory">Fabrication Mâts Acier</th>
+                        <th class="criterion-header criterion-eliminatory">Certifications UE</th>
+                        <th class="criterion-header criterion-eliminatory">Galvanisation</th>
+                        <th class="criterion-header criterion-eliminatory">Export/Clients EU</th>
+                        <th class="criterion-header criterion-eliminatory">Communication Anglais</th>
+                        <th class="criterion-header criterion-eliminatory">Stabilité Financière</th>
+                        <th class="criterion-header criterion-qualifying">Taille Entreprise</th>
+                        <th class="criterion-header criterion-qualifying">Ancienneté</th>
+                        <th class="criterion-header criterion-qualifying">Localisation</th>
+                        <th class="criterion-header criterion-qualifying">Site Web/Comm</th>
+                        <th class="criterion-header criterion-qualifying">Références Clients</th>
+                        <th class="criterion-header criterion-qualifying">Certifications Extra</th>
+                        <th>Score</th>
+                        <th>Statut Final</th>
+                    </tr>
+                </thead>
+                <tbody id="matrix-body">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="legend">
+            <div class="legend-section">
+                <div class="legend-title">🔴 CRITÈRES ÉLIMINATOIRES</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffebee; border-left: 4px solid #f44336;"></div>
+                    <span>Un seul "NON" = ÉLIMINATION automatique</span>
+                </div>
+                <div style="margin-left: 30px; margin-top: 8px; font-size: 0.8em; color: #666;">
+                    Capacité • Mâts Acier • Certifications UE • Galvanisation<br>
+                    Export EU • Anglais • Stabilité Financière
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <div class="legend-title">🟣 CRITÈRES QUALIFIANTS</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(243, 229, 245, 0.5); border-left: 4px solid #9c27b0;"></div>
+                    <span>Points bonus/malus pour départager</span>
+                </div>
+                <div style="margin-left: 30px; margin-top: 8px; font-size: 0.8em; color: #666;">
+                    NON = -2pts • TOLÉRABLE = 0pt • OUI = +2pts<br>
+                    Score ≥4 = QUALIFIÉ • Score 0-3 = TOLÉRABLE
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <div class="legend-title">📊 RÉSULTATS</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #d4edda;"></div>
+                    <span><strong>QUALIFIÉ:</strong> Aucun NON éliminatoire + Score ≥4</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #fff3cd;"></div>
+                    <span><strong>TOLÉRABLE:</strong> Aucun NON éliminatoire + Score 0-3</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f8d7da;"></div>
+                    <span><strong>ÉLIMINÉ:</strong> Au moins un NON éliminatoire</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let suppliers = [];
+        let currentFilter = 'all';
+
+        // Critères de configuration
+        const eliminatoryCriteria = [
+            'capacity', 'fabrication', 'certifications', 'galvanization', 
+            'export', 'communication', 'financial'
+        ];
+
+        const qualifyingCriteria = [
+            'size', 'seniority', 'location', 'website', 'references', 'extraCerts'
+        ];
+
+        function addSupplier() {
+            const supplierName = prompt("Nom du fournisseur:");
+            if (!supplierName) return;
+
+            const newSupplier = {
+                id: Date.now(),
+                name: supplierName,
+                capacity: 'TOLÉRABLE',
+                fabrication: 'TOLÉRABLE',
+                certifications: 'TOLÉRABLE',
+                galvanization: 'TOLÉRABLE',
+                export: 'TOLÉRABLE',
+                communication: 'TOLÉRABLE',
+                financial: 'TOLÉRABLE',
+                size: 'TOLÉRABLE',
+                seniority: 'TOLÉRABLE',
+                location: 'TOLÉRABLE',
+                website: 'TOLÉRABLE',
+                references: 'TOLÉRABLE',
+                extraCerts: 'TOLÉRABLE'
+            };
+
+            suppliers.push(newSupplier);
+            renderMatrix();
+            updateStats();
+        }
+
+        function deleteSupplier(id) {
+            if (confirm("Supprimer ce fournisseur ?")) {
+                suppliers = suppliers.filter(s => s.id !== id);
+                renderMatrix();
+                updateStats();
+            }
+        }
+
+        function updateCriterion(supplierId, criterion, value) {
+            const supplier = suppliers.find(s => s.id === supplierId);
+            if (supplier) {
+                supplier[criterion] = value;
+                renderMatrix();
+                updateStats();
+            }
+        }
+
+        function calculateScore(supplier) {
+            // Vérifier les critères éliminatoires
+            for (let criterion of eliminatoryCriteria) {
+                if (supplier[criterion] === 'NON') {
+                    return { score: 0, status: 'ÉLIMINÉ', reason: 'Critère éliminatoire' };
+                }
+            }
+
+            // Calculer le score des critères qualifiants
+            let score = 0;
+            for (let criterion of qualifyingCriteria) {
+                switch (supplier[criterion]) {
+                    case 'NON': score -= 2; break;
+                    case 'TOLÉRABLE': score += 0; break;
+                    case 'OUI': score += 2; break;
+                }
+            }
+
+            // Déterminer le statut
+            let status = score >= 4 ? 'QUALIFIÉ' : 'TOLÉRABLE';
+            
+            return { score, status, reason: '' };
+        }
+
+        function renderMatrix() {
+            const tbody = document.getElementById('matrix-body');
+            tbody.innerHTML = '';
+
+            const filteredSuppliers = currentFilter === 'all' 
+                ? suppliers 
+                : suppliers.filter(s => calculateScore(s).status === currentFilter);
+
+            filteredSuppliers.forEach(supplier => {
+                const result = calculateScore(supplier);
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td class="supplier-name">
+                        <input type="text" class="supplier-input" value="${supplier.name}" 
+                               onchange="updateSupplierName(${supplier.id}, this.value)">
+                        <button class="delete-btn" onclick="deleteSupplier(${supplier.id})">✕</button>
+                    </td>
+                    ${eliminatoryCriteria.map(criterion => `
+                        <td class="criterion-eliminatory">
+                            <select class="criterion-select value-${supplier[criterion]}" 
+                                    onchange="updateCriterion(${supplier.id}, '${criterion}', this.value)">
+                                <option value="NON" ${supplier[criterion] === 'NON' ? 'selected' : ''}>NON</option>
+                                <option value="TOLÉRABLE" ${supplier[criterion] === 'TOLÉRABLE' ? 'selected' : ''}>TOLÉRABLE</option>
+                                <option value="OUI" ${supplier[criterion] === 'OUI' ? 'selected' : ''}>OUI</option>
+                            </select>
+                        </td>
+                    `).join('')}
+                    ${qualifyingCriteria.map(criterion => `
+                        <td class="criterion-qualifying">
+                            <select class="criterion-select value-${supplier[criterion]}" 
+                                    onchange="updateCriterion(${supplier.id}, '${criterion}', this.value)">
+                                <option value="NON" ${supplier[criterion] === 'NON' ? 'selected' : ''}>NON</option>
+                                <option value="TOLÉRABLE" ${supplier[criterion] === 'TOLÉRABLE' ? 'selected' : ''}>TOLÉRABLE</option>
+                                <option value="OUI" ${supplier[criterion] === 'OUI' ? 'selected' : ''}>OUI</option>
+                            </select>
+                        </td>
+                    `).join('')}
+                    <td class="score-cell">${result.score}</td>
+                    <td class="status-cell status-${result.status}">${result.status}</td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateSupplierName(id, newName) {
+            const supplier = suppliers.find(s => s.id === id);
+            if (supplier) {
+                supplier.name = newName;
+            }
+        }
+
+        function filterSuppliers(filter) {
+            currentFilter = filter;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderMatrix();
+        }
+
+        function updateStats() {
+            const stats = {
+                'QUALIFIÉ': 0,
+                'TOLÉRABLE': 0,
+                'ÉLIMINÉ': 0
+            };
+
+            suppliers.forEach(supplier => {
+                const result = calculateScore(supplier);
+                stats[result.status]++;
+            });
+
+            document.getElementById('qualified-count').textContent = stats['QUALIFIÉ'];
+            document.getElementById('tolerable-count').textContent = stats['TOLÉRABLE'];
+            document.getElementById('eliminated-count').textContent = stats['ÉLIMINÉ'];
+        }
+
+        function exportData() {
+            let csv = 'Nom Fournisseur,Capacité Production,Fabrication Mâts,Certifications UE,Galvanisation,Export EU,Communication,Stabilité Financière,Taille,Ancienneté,Localisation,Site Web,Références,Certif Extra,Score,Statut\n';
+            
+            suppliers.forEach(supplier => {
+                const result = calculateScore(supplier);
+                csv += [
+                    supplier.name,
+                    supplier.capacity,
+                    supplier.fabrication,
+                    supplier.certifications,
+                    supplier.galvanization,
+                    supplier.export,
+                    supplier.communication,
+                    supplier.financial,
+                    supplier.size,
+                    supplier.seniority,
+                    supplier.location,
+                    supplier.website,
+                    supplier.references,
+                    supplier.extraCerts,
+                    result.score,
+                    result.status
+                ].join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'matrice_prequalification_fournisseurs.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Ajouter quelques fournisseurs d'exemple au démarrage
+        function initializeExamples() {
+            const examples = [
+                {
+                    name: "Shanghai Steel Masts Co.",
+                    capacity: 'OUI',
+                    fabrication: 'OUI',
+                    certifications: 'OUI',
+                    galvanization: 'OUI',
+                    export: 'OUI',
+                    communication: 'OUI',
+                    financial: 'OUI',
+                    size: 'OUI',
+                    seniority: 'OUI',
+                    location: 'OUI',
+                    website: 'OUI',
+                    references: 'OUI',
+                    extraCerts: 'OUI'
+                },
+                {
+                    name: "Guangzhou Lighting Poles Ltd",
+                    capacity: 'TOLÉRABLE',
+                    fabrication: 'OUI',
+                    certifications: 'TOLÉRABLE',
+                    galvanization: 'OUI',
+                    export: 'TOLÉRABLE',
+                    communication: 'TOLÉRABLE',
+                    financial: 'OUI',
+                    size: 'TOLÉRABLE',
+                    seniority: 'TOLÉRABLE',
+                    location: 'OUI',
+                    website: 'TOLÉRABLE',
+                    references: 'OUI',
+                    extraCerts: 'NON'
+                },
+                {
+                    name: "Hebei Metal Works",
+                    capacity: 'NON',
+                    fabrication: 'OUI',
+                    certifications: 'NON',
+                    galvanization: 'TOLÉRABLE',
+                    export: 'NON',
+                    communication: 'NON',
+                    financial: 'TOLÉRABLE',
+                    size: 'NON',
+                    seniority: 'TOLÉRABLE',
+                    location: 'TOLÉRABLE',
+                    website: 'NON',
+                    references: 'NON',
+                    extraCerts: 'NON'
+                }
+            ];
+
+            examples.forEach((example, index) => {
+                suppliers.push({
+                    id: Date.now() + index,
+                    ...example
+                });
+            });
+
+            renderMatrix();
+            updateStats();
+        }
+
+        // Initialiser avec des exemples
+        initializeExamples();
+    </script>
+</body>
+</html>
