@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrice Pré-qualification Fournisseurs</title>
+    <title>Suppliers Qualification Matrix</title>
     <style>
         * {
             margin: 0;
@@ -35,7 +35,7 @@
         }
 
         .header h1 {
-            font-size: 2.2em;
+            font-size: 1.8em;
             margin-bottom: 10px;
         }
 
@@ -127,7 +127,7 @@
 
         th {
             background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
-            color: white;
+            color: black;
             padding: 12px 8px;
             text-align: center;
             font-weight: 600;
@@ -207,17 +207,17 @@
             min-width: 100px;
         }
 
-        .status-QUALIFIÉ {
+        .status-QUALIFIED {
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
         }
 
-        .status-TOLÉRABLE {
+        .status-TOLERABLE {
             background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
             color: #856404;
         }
 
-        .status-ÉLIMINÉ {
+        .status-ELIMINATED {
             background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             color: #721c24;
         }
@@ -232,19 +232,19 @@
             border-left: 4px solid #9c27b0;
         }
 
-        .value-NON { 
+        .value-NO { 
             background: #ffcdd2; 
             color: #c62828; 
             font-weight: 600;
         }
 
-        .value-TOLÉRABLE { 
+        .value-TOLERABLE { 
             background: #ffe0b2; 
             color: #ef6c00; 
             font-weight: 600;
         }
 
-        .value-OUI { 
+        .value-YES { 
             background: #c8e6c9; 
             color: #2e7d32; 
             font-weight: 600;
@@ -321,34 +321,34 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎯 Matrice de Pré-qualification Fournisseurs</h1>
-            <p>Mâts d'éclairage 5-13m • Chine • Objectif: 50 → 10-15 candidats</p>
+            <h1>Suppliers Qualification</h1>
+            <p></p>
         </div>
 
         <div class="controls">
             <div>
-                <button class="add-supplier" onclick="addSupplier()">➕ Ajouter Fournisseur</button>
-                <button class="export-btn" onclick="exportData()">📊 Exporter CSV</button>
+                <button class="add-supplier" onclick="addSupplier()">➕ Add Supplier</button>
+                <button class="export-btn" onclick="exportData()">📊 Export CSV</button>
             </div>
             
             <div class="filters">
-                <button class="filter-btn active" onclick="filterSuppliers('all')">Tous</button>
-                <button class="filter-btn" onclick="filterSuppliers('QUALIFIÉ')">Qualifiés</button>
-                <button class="filter-btn" onclick="filterSuppliers('TOLÉRABLE')">Tolérables</button>
-                <button class="filter-btn" onclick="filterSuppliers('ÉLIMINÉ')">Éliminés</button>
+                <button class="filter-btn active" onclick="filterSuppliers('all')">All</button>
+                <button class="filter-btn" onclick="filterSuppliers('QUALIFIED')">Qualified</button>
+                <button class="filter-btn" onclick="filterSuppliers('TOLERABLE')">Tolerable</button>
+                <button class="filter-btn" onclick="filterSuppliers('ELIMINATED')">Eliminated</button>
             </div>
 
             <div class="stats">
                 <div class="stat-item stat-qualified">
-                    <div>QUALIFIÉS</div>
+                    <div>QUALIFIED</div>
                     <div id="qualified-count">0</div>
                 </div>
                 <div class="stat-item stat-tolerable">
-                    <div>TOLÉRABLES</div>
+                    <div>TOLERABLE</div>
                     <div id="tolerable-count">0</div>
                 </div>
                 <div class="stat-item stat-eliminated">
-                    <div>ÉLIMINÉS</div>
+                    <div>ELIMINATED</div>
                     <div id="eliminated-count">0</div>
                 </div>
             </div>
@@ -358,22 +358,20 @@
             <table id="matrix-table">
                 <thead>
                     <tr>
-                        <th>Nom Fournisseur</th>
-                        <th class="criterion-header criterion-eliminatory">Capacité Production (/mois)</th>
-                        <th class="criterion-header criterion-eliminatory">Fabrication Mâts Acier</th>
-                        <th class="criterion-header criterion-eliminatory">Certifications UE</th>
-                        <th class="criterion-header criterion-eliminatory">Galvanisation</th>
-                        <th class="criterion-header criterion-eliminatory">Export/Clients EU</th>
-                        <th class="criterion-header criterion-eliminatory">Communication Anglais</th>
-                        <th class="criterion-header criterion-eliminatory">Stabilité Financière</th>
-                        <th class="criterion-header criterion-qualifying">Taille Entreprise</th>
-                        <th class="criterion-header criterion-qualifying">Ancienneté</th>
-                        <th class="criterion-header criterion-qualifying">Localisation</th>
-                        <th class="criterion-header criterion-qualifying">Site Web/Comm</th>
-                        <th class="criterion-header criterion-qualifying">Références Clients</th>
-                        <th class="criterion-header criterion-qualifying">Certifications Extra</th>
+                        <th>Supplier Name</th>
+                        <th class="criterion-header criterion-eliminatory">Production Capacity (/month)</th>
+                        <th class="criterion-header criterion-eliminatory">Steel Masts Manufacturing (4-10m)</th>
+                        <th class="criterion-header criterion-eliminatory">EU Certifications</th>
+                        <th class="criterion-header criterion-eliminatory">Export/EU Clients</th>
+                        <th class="criterion-header criterion-eliminatory">English Communication</th>
+                        <th class="criterion-header criterion-eliminatory">Financial Stability (if applicable)</th>
+                        <th class="criterion-header criterion-qualifying">Company Size</th>
+                        <th class="criterion-header criterion-qualifying">Seniority</th>
+                        <th class="criterion-header criterion-qualifying">Location</th>
+                        <th class="criterion-header criterion-qualifying">Galvanization</th>
+                        <th class="criterion-header criterion-qualifying">International Client References</th>
                         <th>Score</th>
-                        <th>Statut Final</th>
+                        <th>Final Status</th>
                     </tr>
                 </thead>
                 <tbody id="matrix-body">
@@ -383,42 +381,18 @@
 
         <div class="legend">
             <div class="legend-section">
-                <div class="legend-title">🔴 CRITÈRES ÉLIMINATOIRES</div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #ffebee; border-left: 4px solid #f44336;"></div>
-                    <span>Un seul "NON" = ÉLIMINATION automatique</span>
-                </div>
-                <div style="margin-left: 30px; margin-top: 8px; font-size: 0.8em; color: #666;">
-                    Capacité • Mâts Acier • Certifications UE • Galvanisation<br>
-                    Export EU • Anglais • Stabilité Financière
-                </div>
-            </div>
-
-            <div class="legend-section">
-                <div class="legend-title">🟣 CRITÈRES QUALIFIANTS</div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: rgba(243, 229, 245, 0.5); border-left: 4px solid #9c27b0;"></div>
-                    <span>Points bonus/malus pour départager</span>
-                </div>
-                <div style="margin-left: 30px; margin-top: 8px; font-size: 0.8em; color: #666;">
-                    NON = -2pts • TOLÉRABLE = 0pt • OUI = +2pts<br>
-                    Score ≥4 = QUALIFIÉ • Score 0-3 = TOLÉRABLE
-                </div>
-            </div>
-
-            <div class="legend-section">
-                <div class="legend-title">📊 RÉSULTATS</div>
+                <div class="legend-title">📊 RESULTS</div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #d4edda;"></div>
-                    <span><strong>QUALIFIÉ:</strong> Aucun NON éliminatoire + Score ≥4</span>
+                    <span><strong>QUALIFIED:</strong> No eliminatory "NO" + Score ≥4</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #fff3cd;"></div>
-                    <span><strong>TOLÉRABLE:</strong> Aucun NON éliminatoire + Score 0-3</span>
+                    <span><strong>TOLERABLE:</strong> No eliminatory "NO" + Score 0-3</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #f8d7da;"></div>
-                    <span><strong>ÉLIMINÉ:</strong> Au moins un NON éliminatoire</span>
+                    <span><strong>ELIMINATED:</strong> At least one eliminatory "NO"</span>
                 </div>
             </div>
         </div>
@@ -428,36 +402,33 @@
         let suppliers = [];
         let currentFilter = 'all';
 
-        // Critères de configuration
+        // Critères de configuration mis à jour
         const eliminatoryCriteria = [
-            'capacity', 'fabrication', 'certifications', 'galvanization', 
-            'export', 'communication', 'financial'
+            'capacity', 'fabrication', 'certifications', 'export', 'communication', 'financial'
         ];
 
         const qualifyingCriteria = [
-            'size', 'seniority', 'location', 'website', 'references', 'extraCerts'
+            'size', 'seniority', 'location', 'galvanization', 'references'
         ];
 
         function addSupplier() {
-            const supplierName = prompt("Nom du fournisseur:");
+            const supplierName = prompt("Supplier name:");
             if (!supplierName) return;
 
             const newSupplier = {
                 id: Date.now(),
                 name: supplierName,
-                capacity: 'TOLÉRABLE',
-                fabrication: 'TOLÉRABLE',
-                certifications: 'TOLÉRABLE',
-                galvanization: 'TOLÉRABLE',
-                export: 'TOLÉRABLE',
-                communication: 'TOLÉRABLE',
-                financial: 'TOLÉRABLE',
-                size: 'TOLÉRABLE',
-                seniority: 'TOLÉRABLE',
-                location: 'TOLÉRABLE',
-                website: 'TOLÉRABLE',
-                references: 'TOLÉRABLE',
-                extraCerts: 'TOLÉRABLE'
+                capacity: 'TOLERABLE',
+                fabrication: 'TOLERABLE',
+                certifications: 'TOLERABLE',
+                export: 'TOLERABLE',
+                communication: 'TOLERABLE',
+                financial: 'TOLERABLE',
+                size: 'TOLERABLE',
+                seniority: 'TOLERABLE',
+                location: 'TOLERABLE',
+                galvanization: 'TOLERABLE',
+                references: 'TOLERABLE'
             };
 
             suppliers.push(newSupplier);
@@ -466,7 +437,7 @@
         }
 
         function deleteSupplier(id) {
-            if (confirm("Supprimer ce fournisseur ?")) {
+            if (confirm("Delete this supplier?")) {
                 suppliers = suppliers.filter(s => s.id !== id);
                 renderMatrix();
                 updateStats();
@@ -483,25 +454,25 @@
         }
 
         function calculateScore(supplier) {
-            // Vérifier les critères éliminatoires
+            // Check eliminatory criteria
             for (let criterion of eliminatoryCriteria) {
-                if (supplier[criterion] === 'NON') {
-                    return { score: 0, status: 'ÉLIMINÉ', reason: 'Critère éliminatoire' };
+                if (supplier[criterion] === 'NO') {
+                    return { score: 0, status: 'ELIMINATED', reason: 'Eliminatory criterion' };
                 }
             }
 
-            // Calculer le score des critères qualifiants
+            // Calculate qualifying criteria score
             let score = 0;
             for (let criterion of qualifyingCriteria) {
                 switch (supplier[criterion]) {
-                    case 'NON': score -= 2; break;
-                    case 'TOLÉRABLE': score += 0; break;
-                    case 'OUI': score += 2; break;
+                    case 'NO': score -= 2; break;
+                    case 'TOLERABLE': score += 0; break;
+                    case 'YES': score += 2; break;
                 }
             }
 
-            // Déterminer le statut
-            let status = score >= 4 ? 'QUALIFIÉ' : 'TOLÉRABLE';
+            // Determine status
+            let status = score >= 4 ? 'QUALIFIED' : 'TOLERABLE';
             
             return { score, status, reason: '' };
         }
@@ -528,9 +499,9 @@
                         <td class="criterion-eliminatory">
                             <select class="criterion-select value-${supplier[criterion]}" 
                                     onchange="updateCriterion(${supplier.id}, '${criterion}', this.value)">
-                                <option value="NON" ${supplier[criterion] === 'NON' ? 'selected' : ''}>NON</option>
-                                <option value="TOLÉRABLE" ${supplier[criterion] === 'TOLÉRABLE' ? 'selected' : ''}>TOLÉRABLE</option>
-                                <option value="OUI" ${supplier[criterion] === 'OUI' ? 'selected' : ''}>OUI</option>
+                                <option value="NO" ${supplier[criterion] === 'NO' ? 'selected' : ''}>NO</option>
+                                <option value="TOLERABLE" ${supplier[criterion] === 'TOLERABLE' ? 'selected' : ''}>TOLERABLE</option>
+                                <option value="YES" ${supplier[criterion] === 'YES' ? 'selected' : ''}>YES</option>
                             </select>
                         </td>
                     `).join('')}
@@ -538,9 +509,9 @@
                         <td class="criterion-qualifying">
                             <select class="criterion-select value-${supplier[criterion]}" 
                                     onchange="updateCriterion(${supplier.id}, '${criterion}', this.value)">
-                                <option value="NON" ${supplier[criterion] === 'NON' ? 'selected' : ''}>NON</option>
-                                <option value="TOLÉRABLE" ${supplier[criterion] === 'TOLÉRABLE' ? 'selected' : ''}>TOLÉRABLE</option>
-                                <option value="OUI" ${supplier[criterion] === 'OUI' ? 'selected' : ''}>OUI</option>
+                                <option value="NO" ${supplier[criterion] === 'NO' ? 'selected' : ''}>NO</option>
+                                <option value="TOLERABLE" ${supplier[criterion] === 'TOLERABLE' ? 'selected' : ''}>TOLERABLE</option>
+                                <option value="YES" ${supplier[criterion] === 'YES' ? 'selected' : ''}>YES</option>
                             </select>
                         </td>
                     `).join('')}
@@ -573,9 +544,9 @@
 
         function updateStats() {
             const stats = {
-                'QUALIFIÉ': 0,
-                'TOLÉRABLE': 0,
-                'ÉLIMINÉ': 0
+                'QUALIFIED': 0,
+                'TOLERABLE': 0,
+                'ELIMINATED': 0
             };
 
             suppliers.forEach(supplier => {
@@ -583,13 +554,13 @@
                 stats[result.status]++;
             });
 
-            document.getElementById('qualified-count').textContent = stats['QUALIFIÉ'];
-            document.getElementById('tolerable-count').textContent = stats['TOLÉRABLE'];
-            document.getElementById('eliminated-count').textContent = stats['ÉLIMINÉ'];
+            document.getElementById('qualified-count').textContent = stats['QUALIFIED'];
+            document.getElementById('tolerable-count').textContent = stats['TOLERABLE'];
+            document.getElementById('eliminated-count').textContent = stats['ELIMINATED'];
         }
 
         function exportData() {
-            let csv = 'Nom Fournisseur,Capacité Production,Fabrication Mâts,Certifications UE,Galvanisation,Export EU,Communication,Stabilité Financière,Taille,Ancienneté,Localisation,Site Web,Références,Certif Extra,Score,Statut\n';
+            let csv = 'Supplier Name,Production Capacity,Steel Masts Manufacturing,EU Certifications,Export EU,English Communication,Financial Stability,Company Size,Seniority,Location,Galvanization,International References,Score,Status\n';
             
             suppliers.forEach(supplier => {
                 const result = calculateScore(supplier);
@@ -598,16 +569,14 @@
                     supplier.capacity,
                     supplier.fabrication,
                     supplier.certifications,
-                    supplier.galvanization,
                     supplier.export,
                     supplier.communication,
                     supplier.financial,
                     supplier.size,
                     supplier.seniority,
-                    supplier.location,
-                    supplier.website,
+                    supplier.location,  
+                    supplier.galvanization,
                     supplier.references,
-                    supplier.extraCerts,
                     result.score,
                     result.status
                 ].join(',') + '\n';
@@ -617,7 +586,7 @@
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', 'matrice_prequalification_fournisseurs.csv');
+            link.setAttribute('download', 'supplier_qualification_matrix.csv');
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
@@ -629,51 +598,45 @@
             const examples = [
                 {
                     name: "Shanghai Steel Masts Co.",
-                    capacity: 'OUI',
-                    fabrication: 'OUI',
-                    certifications: 'OUI',
-                    galvanization: 'OUI',
-                    export: 'OUI',
-                    communication: 'OUI',
-                    financial: 'OUI',
-                    size: 'OUI',
-                    seniority: 'OUI',
-                    location: 'OUI',
-                    website: 'OUI',
-                    references: 'OUI',
-                    extraCerts: 'OUI'
+                    capacity: 'YES',
+                    fabrication: 'YES',
+                    certifications: 'YES',
+                    export: 'YES',
+                    communication: 'YES',
+                    financial: 'YES',
+                    size: 'YES',
+                    seniority: 'YES',
+                    location: 'YES',
+                    galvanization: 'YES',
+                    references: 'YES'
                 },
                 {
                     name: "Guangzhou Lighting Poles Ltd",
-                    capacity: 'TOLÉRABLE',
-                    fabrication: 'OUI',
-                    certifications: 'TOLÉRABLE',
-                    galvanization: 'OUI',
-                    export: 'TOLÉRABLE',
-                    communication: 'TOLÉRABLE',
-                    financial: 'OUI',
-                    size: 'TOLÉRABLE',
-                    seniority: 'TOLÉRABLE',
-                    location: 'OUI',
-                    website: 'TOLÉRABLE',
-                    references: 'OUI',
-                    extraCerts: 'NON'
+                    capacity: 'TOLERABLE',
+                    fabrication: 'YES',
+                    certifications: 'TOLERABLE',
+                    export: 'TOLERABLE',
+                    communication: 'TOLERABLE',
+                    financial: 'YES',
+                    size: 'TOLERABLE',
+                    seniority: 'TOLERABLE',
+                    location: 'YES',
+                    galvanization: 'TOLERABLE',
+                    references: 'YES'
                 },
                 {
                     name: "Hebei Metal Works",
-                    capacity: 'NON',
-                    fabrication: 'OUI',
-                    certifications: 'NON',
-                    galvanization: 'TOLÉRABLE',
-                    export: 'NON',
-                    communication: 'NON',
-                    financial: 'TOLÉRABLE',
-                    size: 'NON',
-                    seniority: 'TOLÉRABLE',
-                    location: 'TOLÉRABLE',
-                    website: 'NON',
-                    references: 'NON',
-                    extraCerts: 'NON'
+                    capacity: 'NO',
+                    fabrication: 'YES',
+                    certifications: 'NO',
+                    export: 'NO',
+                    communication: 'NO',
+                    financial: 'TOLERABLE',
+                    size: 'NO',
+                    seniority: 'TOLERABLE',
+                    location: 'TOLERABLE',
+                    galvanization: 'TOLERABLE',
+                    references: 'NO'
                 }
             ];
 
