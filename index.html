@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
@@ -74,17 +74,6 @@
 
         .save-btn {
             background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .load-btn {
-            background: linear-gradient(135deg, #6f42c1 0%, #5a2d82 100%);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -155,15 +144,15 @@
             width: 100%;
             border-collapse: collapse;
             background: white;
-            font-size: 0.85em;
+            font-size: 0.82em;
         }
 
         th {
             background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
-            color: white;
+            color: black;
+            font-weight: bold;
             padding: 12px 8px;
             text-align: center;
-            font-weight: 600;
             border-right: 1px solid rgba(255,255,255,0.2);
             position: sticky;
             top: 0;
@@ -178,15 +167,16 @@
             z-index: 11;
             min-width: 180px;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
         }
 
         .criterion-header {
             writing-mode: vertical-rl;
             text-orientation: mixed;
-            width: 60px;
-            min-width: 60px;
-            max-width: 60px;
-            height: 120px;
+            width: 65px;
+            min-width: 65px;
+            max-width: 65px;
+            height: 140px;
         }
 
         td {
@@ -194,7 +184,7 @@
             text-align: center;
             border: 1px solid #dee2e6;
             position: relative;
-            min-width: 60px;
+            min-width: 65px;
         }
 
         .supplier-name {
@@ -223,7 +213,7 @@
             padding: 4px;
             border: none;
             background: transparent;
-            font-size: 0.8em;
+            font-size: 0.75em;
             font-weight: 600;
             cursor: pointer;
         }
@@ -316,7 +306,7 @@
 
         .legend-section {
             flex: 1;
-            min-width: 300px;
+            min-width: 350px;
         }
 
         .legend-title {
@@ -339,10 +329,6 @@
             border: 1px solid #ccc;
         }
 
-        .file-input {
-            display: none;
-        }
-
         .auto-save-indicator {
             color: #28a745;
             font-size: 0.8em;
@@ -353,8 +339,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Matrice de Qualification Fournisseurs</h1>
-            <p>Version avec sauvegarde automatique</p>
+            <h1>Matrice de Qualification Fournisseurs - Version Finale</h1>
+            <p>Système de scoring complet avec sauvegarde automatique</p>
         </div>
 
         <div class="controls">
@@ -365,8 +351,6 @@
 
             <div class="save-load-buttons">
                 <button class="save-btn" onclick="saveToFile()">💾 Sauvegarder</button>
-                <button class="load-btn" onclick="document.getElementById('loadFile').click()">📁 Charger</button>
-                <input type="file" id="loadFile" class="file-input" accept=".json" onchange="loadFromFile(event)">
                 <button class="export-btn" onclick="exportToExcel()">📊 Export Excel</button>
             </div>
             
@@ -401,13 +385,14 @@
                         <th class="criterion-header criterion-eliminatory">Capacité Production (si applicable)</th>
                         <th class="criterion-header criterion-eliminatory">Type d'Acier</th>
                         <th class="criterion-header criterion-eliminatory">Certifications EU</th>
-                        <th class="criterion-header criterion-eliminatory">Export/Clients EU</th>
-                        <th class="criterion-header criterion-eliminatory">Communication Anglais</th>
+                        <th class="criterion-header criterion-eliminatory">Export/Clients EU + Transport + Anglais</th>
                         <th class="criterion-header criterion-eliminatory">Stabilité Financière (si applicable)</th>
                         <th class="criterion-header criterion-qualifying">Taille Entreprise</th>
                         <th class="criterion-header criterion-qualifying">Ancienneté</th>
                         <th class="criterion-header criterion-qualifying">Galvanisation</th>
                         <th class="criterion-header criterion-qualifying">Références Clients Internationaux</th>
+                        <th class="criterion-header criterion-qualifying">MOQ (si applicable)</th>
+                        <th class="criterion-header criterion-qualifying">Développement Technologique</th>
                         <th>Score</th>
                         <th>Statut Final</th>
                     </tr>
@@ -419,33 +404,56 @@
 
         <div class="legend">
             <div class="legend-section">
-                <div class="legend-title">📊 CRITÈRES DE NOTATION</div>
+                <div class="legend-title">📊 CRITÈRES ÉLIMINATOIRES</div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #ffcdd2;"></div>
-                    <span><strong>Éliminatoires:</strong> NON=0, TOLERABLE=0, OUI=0, N/A=0</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #e9ecef;"></div>
-                    <span><strong>Qualifiants:</strong> NON=-1, TOLERABLE=0, OUI=+1</span>
+                    <span><strong>Capacité Production (si applicable):</strong> NON = Élimination</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #c8e6c9;"></div>
-                    <span><strong>Type d'Acier:</strong> NON=0, TOLERABLE=+1, OUI=+2</span>
+                    <span><strong>Type d'Acier:</strong> NON=Élim., TOL=+1, OUI=+2</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffcdd2;"></div>
+                    <span><strong>Certifications EU:</strong> NON = Élimination</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffcdd2;"></div>
+                    <span><strong>Export+Transport+Anglais:</strong> NON = Élimination</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ffcdd2;"></div>
+                    <span><strong>Stabilité Financière (si applicable):</strong> NON = Élimination</span>
                 </div>
             </div>
             <div class="legend-section">
-                <div class="legend-title">🎯 RÉSULTATS FINAUX</div>
+                <div class="legend-title">🎯 CRITÈRES QUALIFIANTS</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e9ecef;"></div>
+                    <span><strong>Taille, Ancienneté, Galva, Références:</strong> NON=-1, TOL=0, OUI=+1</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e9ecef;"></div>
+                    <span><strong>MOQ (si applicable):</strong> NON=-1, TOL=0, OUI=+1, N/A=0</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e9ecef;"></div>
+                    <span><strong>Développement Tech (R&D, Auto, Logiciels):</strong> NON=-1, TOL=0, OUI=+1</span>
+                </div>
+            </div>
+            <div class="legend-section">
+                <div class="legend-title">🏆 RÉSULTATS FINAUX</div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #d4edda;"></div>
-                    <span><strong>QUALIFIÉ:</strong> Aucun "NON" éliminatoire + Score ≥4</span>
+                    <span><strong>QUALIFIÉ:</strong> Aucun NON éliminatoire + Score ≥ 5</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #fff3cd;"></div>
-                    <span><strong>TOLÉRABLE:</strong> Aucun "NON" éliminatoire + Score 0-3</span>
+                    <span><strong>TOLÉRABLE:</strong> Aucun NON éliminatoire + Score 0-4</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #f8d7da;"></div>
-                    <span><strong>ÉLIMINÉ:</strong> Au moins un "NON" éliminatoire</span>
+                    <span><strong>ÉLIMINÉ:</strong> Au moins 1 NON éliminatoire OU Score < 0</span>
                 </div>
             </div>
         </div>
@@ -455,22 +463,22 @@
         let suppliers = [];
         let currentFilter = 'all';
 
-        // NOUVEAUX CRITÈRES SELON VOS DEMANDES
+        // CRITÈRES SELON VOS NOUVELLES CONSIGNES
         const eliminatoryCriteria = [
-            'capacity',      // Capacité production (si applicable)
-            'steelType',     // Type d'acier (remplace steel manufacturing)
-            'certifications', // Certifications EU
-            'export',        // Export/Clients EU
-            'communication', // Communication Anglais
-            'financial'      // Stabilité financière (si applicable)
+            'capacity',        // Capacité production (si applicable)
+            'steelType',       // Type d'acier (critère mixte)
+            'certifications',  // Certifications EU
+            'exportTransport', // Export/Clients EU + Transport + Anglais (regroupé)
+            'financial'        // Stabilité financière (si applicable)
         ];
 
         const qualifyingCriteria = [
-            'size',          // Taille entreprise
-            'seniority',     // Ancienneté
-            'galvanization', // Galvanisation
-            'references'     // Références clients internationaux
-            // Location retiré selon vos demandes
+            'size',            // Taille entreprise
+            'seniority',       // Ancienneté
+            'galvanization',   // Galvanisation
+            'references',      // Références clients internationaux
+            'moq',             // MOQ (si applicable)
+            'techDevelopment'  // Développement technologique
         ];
 
         // Auto-sauvegarde toutes les 30 secondes
@@ -483,7 +491,6 @@
                     timestamp: new Date().toISOString()
                 };
                 
-                // Simulation de sauvegarde (en réalité, stockage temporaire)
                 window.tempSaveData = data;
                 
                 const indicator = document.getElementById('save-indicator');
@@ -501,43 +508,20 @@
             const data = {
                 suppliers: suppliers,
                 timestamp: new Date().toISOString(),
-                version: "2.0"
+                version: "3.0-FINAL"
             };
             
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `supplier_matrix_${new Date().toISOString().split('T')[0]}.json`);
+            link.setAttribute('download', `supplier_matrix_final_${new Date().toISOString().split('T')[0]}.json`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            alert('✅ Matrice sauvegardée ! Gardez ce fichier pour restaurer vos données.');
-        }
-
-        function loadFromFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.suppliers && Array.isArray(data.suppliers)) {
-                        suppliers = data.suppliers;
-                        renderMatrix();
-                        updateStats();
-                        alert('✅ Données chargées avec succès !');
-                    } else {
-                        alert('❌ Format de fichier invalide');
-                    }
-                } catch (error) {
-                    alert('❌ Erreur lors du chargement du fichier');
-                }
-            };
-            reader.readAsText(file);
+            alert('✅ Matrice sauvegardée ! Version finale avec nouveaux critères.');
         }
 
         function addSupplier() {
@@ -550,13 +534,14 @@
                 capacity: 'TOLERABLE',
                 steelType: 'TOLERABLE',
                 certifications: 'TOLERABLE',
-                export: 'TOLERABLE',
-                communication: 'TOLERABLE',
+                exportTransport: 'TOLERABLE',
                 financial: 'TOLERABLE',
                 size: 'TOLERABLE',
                 seniority: 'TOLERABLE',
                 galvanization: 'TOLERABLE',
-                references: 'TOLERABLE'
+                references: 'TOLERABLE',
+                moq: 'TOLERABLE',
+                techDevelopment: 'TOLERABLE'
             };
 
             suppliers.push(newSupplier);
@@ -585,16 +570,16 @@
             // Vérifier les critères éliminatoires
             for (let criterion of eliminatoryCriteria) {
                 if (supplier[criterion] === 'NO') {
-                    return { score: 0, status: 'ELIMINATED', reason: 'Critère éliminatoire' };
+                    return { score: 0, status: 'ELIMINATED', reason: 'Critère éliminatoire NON' };
                 }
             }
 
             // Calculer le score des critères qualifiants
             let score = 0;
             
-            // Type d'acier : scoring spécial selon vos demandes
+            // Type d'acier : scoring spécial (éliminatoire + points)
             switch (supplier.steelType) {
-                case 'NO': score += 0; break;
+                case 'NO': score += 0; break; // Déjà éliminé ci-dessus
                 case 'TOLERABLE': score += 1; break;
                 case 'YES': score += 2; break;
                 case 'NA': score += 0; break;
@@ -610,8 +595,13 @@
                 }
             }
 
-            // Déterminer le statut final
-            let status = score >= 4 ? 'QUALIFIED' : 'TOLERABLE';
+            // Vérifier si score négatif = élimination
+            if (score < 0) {
+                return { score, status: 'ELIMINATED', reason: 'Score négatif' };
+            }
+
+            // Déterminer le statut final selon nouvelles règles
+            let status = score >= 5 ? 'QUALIFIED' : 'TOLERABLE';
             
             return { score, status, reason: '' };
         }
@@ -636,7 +626,7 @@
                     </td>
                     ${eliminatoryCriteria.map(criterion => {
                         let options = '<option value="NO">NON</option><option value="TOLERABLE">TOLÉRABLE</option><option value="YES">OUI</option>';
-                        if (criterion === 'capacity' || criterion === 'financial') {
+                        if (criterion === 'capacity' || criterion === 'financial' || criterion === 'moq') {
                             options += '<option value="NA">N/A</option>';
                         }
                         return `
@@ -647,17 +637,19 @@
                             </select>
                         </td>
                     `}).join('')}
-                    ${qualifyingCriteria.map(criterion => `
+                    ${qualifyingCriteria.map(criterion => {
+                        let options = '<option value="NO">NON</option><option value="TOLERABLE">TOLÉRABLE</option><option value="YES">OUI</option>';
+                        if (criterion === 'moq') {
+                            options += '<option value="NA">N/A</option>';
+                        }
+                        return `
                         <td class="criterion-qualifying">
                             <select class="criterion-select value-${supplier[criterion]}" 
                                     onchange="updateCriterion(${supplier.id}, '${criterion}', this.value)">
-                                <option value="NO" ${supplier[criterion] === 'NO' ? 'selected' : ''}>NON</option>
-                                <option value="TOLERABLE" ${supplier[criterion] === 'TOLERABLE' ? 'selected' : ''}>TOLÉRABLE</option>
-                                <option value="YES" ${supplier[criterion] === 'YES' ? 'selected' : ''}>OUI</option>
-                                <option value="NA" ${supplier[criterion] === 'NA' ? 'selected' : ''}>N/A</option>
+                                ${options.replace(`value="${supplier[criterion]}"`, `value="${supplier[criterion]}" selected`)}
                             </select>
                         </td>
-                    `).join('')}
+                    `}).join('')}
                     <td class="score-cell">${result.score}</td>
                     <td class="status-cell status-${result.status}">${result.status}</td>
                 `;
@@ -702,8 +694,7 @@
         }
 
         function exportToExcel() {
-            // Export CSV optimisé pour Excel
-            let csv = 'ID_Fournisseur,Nom_Fournisseur,Capacite_Production,Type_Acier,Certifications_EU,Export_EU,Communication_Anglais,Stabilite_Financiere,Taille_Entreprise,Anciennete,Galvanisation,References_Internationales,Score_Total,Statut_Final,Date_Export\n';
+            let csv = 'ID_Fournisseur,Nom_Fournisseur,Capacite_Production,Type_Acier,Certifications_EU,Export_Transport_Anglais,Stabilite_Financiere,Taille_Entreprise,Anciennete,Galvanisation,References_Internationales,MOQ,Developpement_Technologique,Score_Total,Statut_Final,Date_Export\n';
             
             suppliers.forEach(supplier => {
                 const result = calculateScore(supplier);
@@ -713,13 +704,14 @@
                     supplier.capacity,
                     supplier.steelType,
                     supplier.certifications,
-                    supplier.export,
-                    supplier.communication,
+                    supplier.exportTransport,
                     supplier.financial,
                     supplier.size,
                     supplier.seniority,
                     supplier.galvanization,
                     supplier.references,
+                    supplier.moq,
+                    supplier.techDevelopment,
                     result.score,
                     result.status,
                     new Date().toISOString().split('T')[0]
@@ -730,7 +722,7 @@
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `matrice_fournisseurs_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute('download', `matrice_fournisseurs_final_${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
@@ -741,34 +733,19 @@
         function initializeExample() {
             suppliers.push({
                 id: Date.now(),
-                name: "Exemple Fournisseur",
+                name: "Exemple Fournisseur Qualifié",
                 capacity: 'YES',
                 steelType: 'YES',
                 certifications: 'YES',
-                export: 'YES',
-                communication: 'YES',
-                financial: 'NA',
+                exportTransport: 'YES',
+                financial: 'YES',
                 size: 'YES',
                 seniority: 'YES',
                 galvanization: 'YES',
-                references: 'YES'
+                references: 'YES',
+                moq: 'YES',
+                techDevelopment: 'YES'
             });
 
             renderMatrix();
             updateStats();
-        }
-
-        // Démarrer avec un exemple
-        initializeExample();
-
-        // Sauvegarder avant fermeture
-        window.addEventListener('beforeunload', function(e) {
-            if (suppliers.length > 0) {
-                autoSave();
-                e.preventDefault();
-                e.returnValue = 'Vous avez des données non sauvegardées. Voulez-vous vraiment quitter ?';
-            }
-        });
-    </script>
-</body>
-</html>
